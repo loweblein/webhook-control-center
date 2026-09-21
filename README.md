@@ -1,8 +1,22 @@
 # Webhook Control Center
 
+[![CI](https://github.com/loweblein/webhook-control-center/actions/workflows/ci.yml/badge.svg)](https://github.com/loweblein/webhook-control-center/actions/workflows/ci.yml)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169e1?logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-BullMQ-dc382d?logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ed?logo=docker&logoColor=white)
+
 Webhook Control Center é um projeto de portfólio com aparência e arquitetura de produto real para gerenciar endpoints de webhook, receber eventos, entregar payloads de forma assíncrona, reexecutar falhas e inspecionar tentativas de entrega.
 
 Ele é inspirado conceitualmente em Stripe Webhooks e Svix, com API real, persistência em PostgreSQL, fila Redis/BullMQ, isolamento por workspace e um dashboard React alimentado por dados do banco.
+
+## Repositório
+
+```bash
+git clone https://github.com/loweblein/webhook-control-center.git
+cd webhook-control-center
+```
 
 ## Como iniciar rápido
 
@@ -62,13 +76,16 @@ URLs:
 - Swagger/OpenAPI em `/docs`
 - Docker Compose com Postgres, Redis, API, worker e web
 
-## Screenshots
+## Demonstração visual
 
-Adicione capturas depois de rodar o app localmente:
+O dashboard foi construído para parecer uma ferramenta SaaS real, com visão geral de métricas, tabelas operacionais, filtros, timeline de tentativas, replay manual, modo escuro, gerenciamento de endpoints e API keys.
 
-- `docs/screenshots/overview.png`
-- `docs/screenshots/deliveries.png`
-- `docs/screenshots/endpoints.png`
+Fluxo recomendado para avaliação:
+
+1. Entrar com o usuário demo.
+2. Criar um endpoint apontando para uma URL do Webhook.site.
+3. Gerar eventos em `POST /v1/events`.
+4. Acompanhar entregas, falhas, retries, replay e métricas no dashboard.
 
 ## Arquitetura
 
