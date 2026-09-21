@@ -28,16 +28,23 @@ export const session = {
 };
 
 export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const headers = new Headers();
+  if (options.body !== undefined) {
+    headers.set("content-type", "application/json");
+  }
+  if (session.token) {
+    headers.set("authorization", `Bearer ${session.token}`);
+  }
+
+  const workspaceId = options.workspaceId ?? session.workspaceId;
+  if (workspaceId) {
+    headers.set("x-workspace-id", workspaceId);
+  }
+
   const response = await fetch(`${apiUrl}${path}`, {
     method: options.method ?? "GET",
-    headers: {
-      "content-type": "application/json",
-      ...(session.token ? { authorization: `Bearer ${session.token}` } : {}),
-      ...(options.workspaceId ?? session.workspaceId
-        ? { "x-workspace-id": options.workspaceId ?? session.workspaceId ?? "" }
-        : {})
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined
+    headers,
+    body: options.body !== undefined ? JSON.stringify(options.body) : undefined
   });
 
   if (!response.ok) {
