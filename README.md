@@ -80,6 +80,10 @@ URLs:
 
 O dashboard foi construído para parecer uma ferramenta SaaS real, com visão geral de métricas, tabelas operacionais, filtros, timeline de tentativas, replay manual, modo escuro, gerenciamento de endpoints e API keys.
 
+### 🎥 Vídeo demonstrativo
+
+https://github.com/user-attachments/assets/f005d5f3-d8de-4440-8d76-67b4a35ea457
+
 Fluxo recomendado para avaliação:
 
 1. Entrar com o usuário demo.
