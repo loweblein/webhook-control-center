@@ -25,15 +25,17 @@ function isPrivateIPv4(ip: string): boolean {
 
 function isPrivateIPv6(ip: string): boolean {
   const normalized = ip.toLowerCase();
+  const mappedIpv4 = normalized.match(/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/)?.[1];
+  if (mappedIpv4) {
+    return isPrivateIPv4(mappedIpv4);
+  }
+
   return (
     normalized === "::1" ||
     normalized === "::" ||
     normalized.startsWith("fc") ||
     normalized.startsWith("fd") ||
-    normalized.startsWith("fe80") ||
-    normalized.startsWith("::ffff:127.") ||
-    normalized.startsWith("::ffff:10.") ||
-    normalized.includes("169.254.169.254")
+    normalized.startsWith("fe80")
   );
 }
 

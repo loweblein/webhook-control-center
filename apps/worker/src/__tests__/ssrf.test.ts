@@ -8,10 +8,16 @@ describe("SSRF private address guard", () => {
     expect(isBlockedIp("192.168.1.2")).toBe(true);
     expect(isBlockedIp("169.254.169.254")).toBe(true);
     expect(isBlockedIp("::1")).toBe(true);
+    expect(isBlockedIp("::ffff:127.0.0.1")).toBe(true);
+    expect(isBlockedIp("::ffff:10.0.0.5")).toBe(true);
+    expect(isBlockedIp("::ffff:172.16.0.8")).toBe(true);
+    expect(isBlockedIp("::ffff:192.168.1.2")).toBe(true);
+    expect(isBlockedIp("::ffff:169.254.169.254")).toBe(true);
   });
 
   it("allows public addresses", () => {
     expect(isBlockedIp("8.8.8.8")).toBe(false);
     expect(isBlockedIp("1.1.1.1")).toBe(false);
+    expect(isBlockedIp("::ffff:8.8.8.8")).toBe(false);
   });
 });

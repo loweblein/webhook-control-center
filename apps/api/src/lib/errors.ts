@@ -1,4 +1,5 @@
 import type { FastifyReply } from "fastify";
+import { Prisma } from "@wcc/database";
 import { ZodError } from "zod";
 
 export class AppError extends Error {
@@ -25,6 +26,16 @@ export function sendError(reply: FastifyReply, error: unknown, production: boole
         code: "VALIDATION_ERROR",
         message: "Payload da requisição inválido",
         details: error.flatten()
+      }
+    });
+    return;
+  }
+
+  if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+    void reply.status(409).send({
+      error: {
+        code: "RESOURCE_ALREADY_EXISTS",
+        message: "Já existe um recurso com esses dados"
       }
     });
     return;
