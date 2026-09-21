@@ -11,16 +11,16 @@ Webhook Control Center é um projeto de portfólio com aparência e arquitetura 
 
 Ele é inspirado conceitualmente em Stripe Webhooks e Svix, com API real, persistência em PostgreSQL, fila Redis/BullMQ, isolamento por workspace e um dashboard React alimentado por dados do banco.
 
-## Repositório
+## 📦 Repositório
 
 ```bash
 git clone https://github.com/loweblein/webhook-control-center.git
 cd webhook-control-center
 ```
 
-## Como iniciar rápido
+## 🚀 Como iniciar rápido
 
-### Opção 1: Docker
+### 🐳 Opção 1: Docker
 
 ```bash
 docker compose up --build
@@ -39,7 +39,7 @@ demo@example.com
 password123
 ```
 
-### Opção 2: Desenvolvimento local
+### 💻 Opção 2: Desenvolvimento local
 
 Você precisa ter PostgreSQL e Redis rodando localmente.
 
@@ -57,7 +57,7 @@ URLs:
 - API: `http://localhost:4000`
 - Documentação: `http://localhost:4000/docs`
 
-## Funcionalidades
+## ⚙️ Funcionalidades
 
 - Autenticação com cadastro, login, JWT e hash de senha com Argon2
 - Isolamento completo por workspace com papéis `OWNER` e `MEMBER`
@@ -76,7 +76,7 @@ URLs:
 - Swagger/OpenAPI em `/docs`
 - Docker Compose com Postgres, Redis, API, worker e web
 
-## Demonstração visual
+## 🖼️ Demonstração visual
 
 O dashboard foi construído para parecer uma ferramenta SaaS real, com visão geral de métricas, tabelas operacionais, filtros, timeline de tentativas, replay manual, modo escuro, gerenciamento de endpoints e API keys.
 
@@ -87,7 +87,7 @@ Fluxo recomendado para avaliação:
 3. Gerar eventos em `POST /v1/events`.
 4. Acompanhar entregas, falhas, retries, replay e métricas no dashboard.
 
-## Arquitetura
+## 🏗️ Arquitetura
 
 ```mermaid
 flowchart TD
@@ -102,7 +102,7 @@ flowchart TD
 
 A API apenas valida, persiste e enfileira. Ela não entrega webhooks durante a requisição de ingestão. A entrega acontece em um processo worker separado.
 
-## Stack
+## 🧰 Stack
 
 - Node.js, TypeScript, monorepo pnpm
 - Fastify, Prisma, PostgreSQL
@@ -112,7 +112,7 @@ A API apenas valida, persiste e enfileira. Ela não entrega webhooks durante a r
 - Vitest, ESLint, Prettier
 - Docker Compose, GitHub Actions
 
-## Estrutura do repositório
+## 📁 Estrutura do repositório
 
 ```text
 apps/
@@ -125,7 +125,7 @@ packages/
   database/  saída gerada do Prisma Client
 ```
 
-## Variáveis de ambiente
+## 🔐 Variáveis de ambiente
 
 Copie o arquivo de exemplo:
 
@@ -144,7 +144,7 @@ WEB_ORIGIN=http://localhost:5173
 VITE_API_URL=http://localhost:4000
 ```
 
-## Comandos úteis
+## 🧪 Comandos úteis
 
 ```bash
 pnpm dev
@@ -157,7 +157,7 @@ pnpm db:migrate
 pnpm db:seed
 ```
 
-## Exemplo de API
+## 📡 Exemplo de API
 
 Crie uma API key no dashboard e envie um evento:
 
@@ -186,7 +186,7 @@ Resposta:
 }
 ```
 
-## Verificação HMAC
+## 🔏 Verificação HMAC
 
 Cada delivery envia:
 
@@ -225,7 +225,7 @@ function verifyWebhook({ secret, timestamp, payload, signatureHeader }) {
 
 No receiver, rejeite timestamps antigos para reduzir risco de replay attack.
 
-## Retries
+## 🔁 Retries
 
 O worker usa uma régua de retry real:
 
@@ -239,7 +239,7 @@ tentativa 5: 10min
 
 Depois da última tentativa com falha, a delivery vira `DEAD`. O histórico de tentativas é append-only, então o replay preserva as tentativas anteriores.
 
-## Segurança
+## 🛡️ Segurança
 
 - Senhas com hash Argon2id
 - API keys de alta entropia armazenadas somente como SHA-256 hash + prefixo
@@ -252,7 +252,7 @@ Depois da última tentativa com falha, a delivery vira `DEAD`. O histórico de t
 - Proteção SSRF bloqueando localhost, faixas privadas, metadata IP e DNS que resolve para IP privado
 - Logs com redaction de authorization headers, API keys, secrets e hashes
 
-## Métricas
+## 📊 Métricas
 
 O dashboard calcula a partir do banco:
 
@@ -266,7 +266,7 @@ O dashboard calcula a partir do banco:
 - eventos nas últimas 24h
 - endpoints com mais erros
 
-## Testes e qualidade
+## ✅ Testes e qualidade
 
 ```bash
 pnpm lint
@@ -277,7 +277,7 @@ pnpm build
 
 Os testes cobrem assinatura/verificação HMAC, régua de retry, transições de retry/dead state, hash/formato de API key e bloqueio de endereços privados contra SSRF.
 
-## CI
+## 🤖 CI
 
 GitHub Actions executa:
 
@@ -288,6 +288,6 @@ GitHub Actions executa:
 5. testes
 6. build
 
-## Decisões técnicas
+## 🧠 Decisões técnicas
 
 O projeto mantém API e worker como processos separados. A API é otimizada para ingestão rápida e enfileiramento; o worker é responsável por entrega de rede, assinatura HMAC, medição de latência, histórico de tentativas e agendamento de retries.
