@@ -1,0 +1,12 @@
+{
+  "name": "@wcc/database",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "generated/client/index.js",
+  "types": "generated/client/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

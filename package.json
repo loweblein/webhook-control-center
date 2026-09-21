@@ -1,0 +1,43 @@
+{
+  "name": "webhook-control-center",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Uma plataforma de gerenciamento e entrega de webhooks com foco em qualidade de portfólio.",
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "dev": "concurrently -n api,worker,web -c cyan,magenta,green \"pnpm --filter @wcc/api dev\" \"pnpm --filter @wcc/worker dev\" \"pnpm --filter @wcc/web dev\"",
+    "build": "pnpm -r build",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "pnpm -r typecheck",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "db:generate": "cross-env PRISMA_GENERATE_SKIP_AUTOINSTALL=1 prisma generate --schema apps/api/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema apps/api/prisma/schema.prisma",
+    "db:deploy": "prisma migrate deploy --schema apps/api/prisma/schema.prisma",
+    "db:seed": "tsx apps/api/prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "prisma": "^6.19.3",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1",
+    "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  },
+  "prisma": {
+    "seed": "tsx apps/api/prisma/seed.ts"
+  }
+}

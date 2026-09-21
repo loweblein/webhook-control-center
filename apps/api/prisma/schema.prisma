@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../packages/database/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum WorkspaceRole {
+  OWNER
+  MEMBER
+}
+
+enum DeliveryStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  DEAD
+}
+
+model User {
+  id           String            @id @default(cuid())
+  email        String            @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  memberships  WorkspaceMember[]
+}
+
+model Workspace {
+  id          String             @id
+  name        String
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  members     WorkspaceMember[]
+  apiKeys     ApiKey[]
+  endpoints   WebhookEndpoint[]
+  events      Event[]
+  deliveries  Delivery[]
+}
+
+model WorkspaceMember {
+  id          String        @id @default(cuid())
+  userId      String
+  workspaceId String
+  role        WorkspaceRole @default(MEMBER)
+  createdAt   DateTime      @default(now())
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+model ApiKey {
+  id          String     @id
+  workspaceId String
+  name        String
+  prefix      String
+  hash        String     @unique
+  createdAt   DateTime   @default(now())
+  revokedAt   DateTime?
+  lastUsedAt  DateTime?
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  events      Event[]
+
+  @@index([workspaceId])
+  @@index([prefix])
+}
+
+model WebhookEndpoint {
+  id            String                 @id
+  workspaceId   String
+  name          String
+  url           String
+  secret        String
+  active        Boolean                @default(true)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  workspace     Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  subscriptions EndpointSubscription[]
+  deliveries    Delivery[]
+
+  @@index([workspaceId])
+  @@index([workspaceId, active])
+}
+
+model EndpointSubscription {
+  id         String          @id @default(cuid())
+  endpointId String
+  eventType  String
+  endpoint   WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+
+  @@unique([endpointId, eventType])
+  @@index([eventType])
+}
+
+model Event {
+  id          String     @id
+  workspaceId String
+  apiKeyId    String?
+  type        String
+  payload     Json
+  createdAt   DateTime   @default(now())
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  apiKey      ApiKey?     @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  deliveries  Delivery[]
+
+  @@index([workspaceId, createdAt])
+  @@index([workspaceId, type])
+}
+
+model Delivery {
+  id             String            @id
+  workspaceId    String
+  eventId        String
+  endpointId     String
+  status         DeliveryStatus    @default(PENDING)
+  attemptCount   Int               @default(0)
+  nextAttemptAt  DateTime?
+  lastError      String?
+  httpStatus     Int?
+  latencyMs      Int?
+  completedAt    DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  workspace      Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  event          Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  endpoint       WebhookEndpoint   @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  attempts       DeliveryAttempt[]
+
+  @@unique([eventId, endpointId])
+  @@index([workspaceId, status, createdAt])
+  @@index([endpointId, createdAt])
+}
+
+model DeliveryAttempt {
+  id             String    @id
+  deliveryId     String
+  attemptNumber  Int
+  timestamp      DateTime  @default(now())
+  requestHeaders Json
+  requestBody    Json
+  responseStatus Int?
+  responseBody   String?
+  error          String?
+  latencyMs      Int?
+  durationMs     Int
+  delivery       Delivery  @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+
+  @@unique([deliveryId, attemptNumber])
+  @@index([deliveryId, timestamp])
+}

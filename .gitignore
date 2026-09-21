@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.local
+coverage
+apps/web/dist
+apps/web/dist-types
+packages/database/generated
+*.log

@@ -1,0 +1,24 @@
+{
+  "name": "@wcc/worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/apps/worker/src/index.js"
+  },
+  "dependencies": {
+    "@wcc/database": "workspace:*",
+    "@wcc/shared": "workspace:*",
+    "bullmq": "^5.58.5",
+    "ioredis": "^5.7.0",
+    "pino": "^9.9.5",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
